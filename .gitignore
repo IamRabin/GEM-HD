@@ -42,6 +42,9 @@ ENV/
 artifacts/
 results/
 
+# External repositories
+pytorch_mpiigaze_demo/
+
 # OS
 .DS_Store
 Thumbs.db
