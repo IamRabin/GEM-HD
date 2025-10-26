@@ -21,7 +21,7 @@ mediapipe>=0.10.0
 opencv-python>=4.9.0
 
 # Governance + Docs
-dreams>=0.2.1
+dreams_mc
 
 # Misc
 tqdm>=4.66.0

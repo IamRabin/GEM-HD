@@ -1,7 +1,11 @@
 # GEM-HD
 Gaze-based Early Mental Health Detection
 
+![GEM-HD](results/figures/GEM.png)
+
+
 ## Overview
+
 We use webcam-based eye-gaze trajectories to assess cognitive engagement and fatigue.
 Our system estimates uncertainty, detects drift, and self-evaluates — producing a transparent model card.
 
