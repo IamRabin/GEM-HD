@@ -1,0 +1,27 @@
+{
+  "ks_report": {
+    "fixation_duration_ms": {
+      "KS_stat": 0.026312899126041456,
+      "p_value": 0.9969852376872239,
+      "drift_detected": false
+    },
+    "saccade_velocity_deg_s": {
+      "KS_stat": 0.05435174870161455,
+      "p_value": 0.5199081172346702,
+      "drift_detected": false
+    },
+    "blink_rate_hz": {
+      "KS_stat": 0.06361957960031171,
+      "p_value": 0.3251726724025769,
+      "drift_detected": false
+    },
+    "scanpath_entropy": {
+      "KS_stat": 0.08261026469803712,
+      "p_value": 0.09573867224551871,
+      "drift_detected": false
+    }
+  },
+  "mahalanobis_mean": 4.22424491429827,
+  "mahalanobis_std": 2.7778739943032074,
+  "outlier_ratio": 0.05115089514066496
+}
