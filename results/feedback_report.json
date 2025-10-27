@@ -1,0 +1,17 @@
+{
+  "actions": [
+    {
+      "type": "recalibrate",
+      "reason": "ECE = 0.168 > threshold 0.1"
+    },
+    {
+      "type": "investigate",
+      "reason": "Outlier ratio = 0.051 > 0.05"
+    }
+  ],
+  "summary": {
+    "retrain_needed": false,
+    "recalibration_needed": true,
+    "pipeline_check": true
+  }
+}

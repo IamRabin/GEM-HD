@@ -1,0 +1,85 @@
+model_version: V.1.0
+logo_path: /home/rabink1/D1/gemhd/GEM-HD/results/figures/logo.png
+dataset_name: Gaze & Affect Behavioral Dataset
+num_target_class: Regression (continuous affect level)
+ground_truth: Self-reported affect / cognitive state
+split_ratio: '80:20'
+preprocess_steps: 'Face & gaze extraction via webcam, blink rate smoothing,
+
+  temporal normalization, and z-scoring.
+
+  '
+model_type: Multimodal Transformer (Vision + Physiological)
+learning_approach: Self-supervised + Fine-tuned for regression
+model_input:
+- Eye-gaze trajectory data (x, y, pupil diameter)
+- Blink rate and fixation durations
+- Head pose and temporal embeddings
+model_output:
+- Predicted affect level or cognitive engagement score
+- "Uncertainty estimate per prediction (\u03C3)"
+describe_overview: "The GEM-HD model estimates mental health\u2013related affect levels\
+  \ using multimodal gaze dynamics.\nThe model integrates gaze vectors, blink and\
+  \ fixation features, and temporal embeddings\nto predict engagement and uncertainty.\
+  \ This card documents its performance and reliability.\n"
+describe_dataset: 'Dataset includes eye-gaze recordings collected during various cognitive
+  and emotional tasks.
+
+  Data are anonymized and conform to GDPR standards. For more details, see:
+
+  <a href=''https://openneuro.org/''>link</a>.
+
+  '
+model_details: 'Model trained using DINO-pretrained Vision Transformer backbone.
+
+  Implements uncertainty quantification and domain adaptation.
+
+  '
+learning_rate: 1e-4
+batch_size: 32
+additional_info: Approx. 12M parameters; trained for 50 epochs on TUAB-like dataset.
+limitation_details:
+- Performance may vary depending on lighting and camera quality.
+- Training dataset may not reflect all demographic or cultural gaze variations.
+- Prolonged occlusion (e.g., glasses glare) may reduce reliability.
+performance_comments: 'Evaluation metrics were obtained on the held-out test set and
+  during online adaptation.
+
+  Results reflect stability and calibration across sessions.
+
+
+
+  <h3>Performance Metrics Summary</h3>
+
+  MAE: 0.03816133909353038
+
+  RMSE: 0.04856322158981691
+
+  ECE: 0.16791042926420632
+
+  Uncertainty_Error_SpearmanR: -0.013265105373252983
+
+  Detected_drift_features: []
+
+  Outlier_ratio: 0.05115089514066496
+
+  Recommended_actions:
+
+  - recalibrate
+
+  - investigate
+
+  '
+uncertainty_describe: "Confidence intervals around predictions reflect model\u2019\
+  s self-assessed reliability.\nHigh ECE values indicate calibration drift requiring\
+  \ recalibration.\n"
+data_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/data_dist.png
+loss_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/data_dist.png
+acc_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/calibration_curve.png
+cm_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/drift_summary.png
+uncertainty_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/err_vs_uncertainty.png
+result_table_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/feedback_table.png
+references: "<ol>\n  <li>Mitchell, M. et al. (2019). Model cards for model reporting.\n\
+  \      In Proceedings of the Conference on Fairness, Accountability, and Transparency\
+  \ (pp. 220\u2013229).</li>\n  <li>LucidJun Inc. Internal GEM-HD Documentation (2025).</li>\n\
+  </ol>\n"
