@@ -7,7 +7,7 @@ Layout
 - data/processed: outputs
   - ref.parquet: baseline features from ARGaze Scene 2
   - current.parquet: webcam/demo features
-- data/demo_videos: optional short videos
+- data/demo_videos: test short videos 
 
 Usage
 -----
