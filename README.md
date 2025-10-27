@@ -1,7 +1,12 @@
-# GEM-HD: Gaze-based Early Mental Health Detection
+# GEM-HD
+Gaze-based Early Mental Health Detection
+
+![GEM-HD](results/figures/GEM.png)
 
 ## Overview
-We use webcam-based eye-gaze trajectories to assess cognitive engagement and fatigue. Our system estimates uncertainty, detects drift, and self-evaluates — producing a transparent model card.
+
+We use webcam-based eye-gaze trajectories to assess cognitive engagement and fatigue.
+Our system estimates uncertainty, detects drift, and self-evaluates — producing a transparent model card.
 
 ## Features
 - **Gaze Engagement Prediction**: Predicts cognitive engagement from gaze features
@@ -11,30 +16,43 @@ We use webcam-based eye-gaze trajectories to assess cognitive engagement and fat
 - **Production Ready**: Minimal, clean codebase for deployment
 
 ## Folder Structure
+
 ```
 src/
-├── model.py          # Model definitions (TinyMLP, MultimodalModel)
-├── train.py          # Training script with uncertainty estimation
-├── predict.py        # Prediction script with clinical reports
-├── conformal.py      # Uncertainty analysis (epistemic, aleatoric, conformal)
-└── utils_io.py      # Data I/O utilities
+├── model.py                    # Model definitions (TinyMLP, MultimodalModel)
+├── train.py                    # Training script with uncertainty estimation
+├── predict.py                  # Prediction script with clinical reports
+├── conformal.py                # Uncertainty analysis (epistemic, aleatoric, conformal)
+├── utils_io.py                 # Data I/O utilities
+├── feature_extraction/         # Feature extraction from webcam data
+└── evaluation_agent/          # Model evaluation and drift detection
 ```
+
+## Team Roles
+- Member 1 – Data & Feature Engineer
+- Member 2 – ML & Uncertainty Lead
+- Member 3 – Evaluation & Ops Engineer
 
 ## How to Run
 
-### 1. Train Model
+### 1. Feature Extraction
+```bash
+python src/feature_extraction/extract_features.py
+```
+
+### 2. Train Model
 ```bash
 python src/train.py --ref_path ref.parquet --epochs 30
 ```
 
-### 2. Mental Health Assessment
+### 3. Mental Health Assessment
 ```bash
 python src/predict.py --current_path current.parquet --model_path artifacts/mental_health_model.pt --patient_id "PATIENT_001"
 ```
 
-### 3. Feature Extraction (if needed)
+### 4. Evaluation & Drift Detection
 ```bash
-python src/feature_extraction/extract_features.py
+python src/evaluation_agent/main.py --run configs/run.yaml --judge configs/judge.yaml
 ```
 
 ## Example Output
@@ -56,6 +74,11 @@ python src/feature_extraction/extract_features.py
 - Uncertainty analysis
 - Clinical validation results
 
+### Drift Report (`results/drift_report.json`):
+- Model drift detection
+- Performance monitoring
+- Data quality assessment
+
 ## Mental Health Indicators
 - **Low engagement** → Depression, attention disorders
 - **High engagement** → Good mental health
@@ -66,11 +89,6 @@ python src/feature_extraction/extract_features.py
 2. **Aleatoric Uncertainty**: Data noise assessment (MSE-based)
 3. **Conformal Prediction**: Statistical coverage guarantees (90% intervals)
 
-## Team Roles
-- **Member 1** – Data & Feature Engineer
-- **Member 2** – ML & Uncertainty Lead  
-- **Member 3** – Evaluation & Ops Engineer
-
 ## Purpose
 - Cognitive Health Assessment
 - Multimodal AI for Mental Health
@@ -79,7 +97,7 @@ python src/feature_extraction/extract_features.py
 
 ## Requirements
 ```bash
-pip install torch pandas numpy scipy scikit-learn
+pip install torch pandas numpy scipy scikit-learn mediapipe opencv-python
 ```
 
 ## About
