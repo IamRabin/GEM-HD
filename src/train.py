@@ -17,7 +17,7 @@ from scipy.stats import spearmanr
 
 from utils_io import load_parquet_or_csv, save_parquet_or_csv
 from model import create_model, gpu_status_str
-from conformal import SplitConformalRegressor
+from split_conformal import SplitConformalRegressor
 
 FEATS = ["fixation_duration_ms", "saccade_velocity_deg_s", "blink_rate_hz", "scanpath_entropy", "aoi_hit_rate"]
 

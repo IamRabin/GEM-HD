@@ -1,27 +1,27 @@
 {
   "ks_report": {
     "fixation_duration_ms": {
-      "KS_stat": 0.5862210095497954,
-      "p_value": 0.0009508088637347944,
+      "KS_stat": 0.7561678463094035,
+      "p_value": 1.9675475602045533e-06,
       "drift_detected": true
     },
     "saccade_velocity_deg_s": {
-      "KS_stat": 0.890450204638472,
-      "p_value": 8.605309248007811e-10,
+      "KS_stat": 0.9,
+      "p_value": 2.230221747997656e-10,
       "drift_detected": true
     },
     "blink_rate_hz": {
-      "KS_stat": 0.5770804911323328,
-      "p_value": 0.0012217979865676812,
+      "KS_stat": 1.0,
+      "p_value": 7.624257707242427e-30,
       "drift_detected": true
     },
     "scanpath_entropy": {
-      "KS_stat": 0.3809004092769441,
-      "p_value": 0.08493941094263842,
-      "drift_detected": false
+      "KS_stat": 0.6349342770475227,
+      "p_value": 0.00019815525636601911,
+      "drift_detected": true
     }
   },
-  "mahalanobis_mean": 194.9515674903518,
-  "mahalanobis_std": 159.13247170822842,
+  "mahalanobis_mean": 21.231116522857228,
+  "mahalanobis_std": 19.59578666825059,
   "outlier_ratio": 0.1
 }

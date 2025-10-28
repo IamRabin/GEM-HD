@@ -2,7 +2,7 @@
   "actions": [
     {
       "type": "retrain",
-      "reason": "MAE = 0.292 > threshold 0.2"
+      "reason": "MAE = 139.717 > threshold 0.2"
     },
     {
       "type": "recalibrate",
@@ -10,7 +10,7 @@
     },
     {
       "type": "retrain",
-      "reason": "Drift detected in fixation_duration_ms, saccade_velocity_deg_s, blink_rate_hz"
+      "reason": "Drift detected in fixation_duration_ms, saccade_velocity_deg_s, blink_rate_hz, scanpath_entropy"
     },
     {
       "type": "investigate",

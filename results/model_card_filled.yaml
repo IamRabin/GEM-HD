@@ -51,9 +51,9 @@ performance_comments: 'Evaluation metrics were obtained on the held-out test set
 
   <h3>Performance Metrics Summary</h3>
 
-  MAE: 0.2918338024698442
+  MAE: 139.71672678472765
 
-  RMSE: 0.3139436491436929
+  RMSE: 149.92930188356848
 
   ECE: 0.7226022975656561
 
@@ -66,6 +66,8 @@ performance_comments: 'Evaluation metrics were obtained on the held-out test set
   - saccade_velocity_deg_s
 
   - blink_rate_hz
+
+  - scanpath_entropy
 
   Outlier_ratio: 0.1
 
