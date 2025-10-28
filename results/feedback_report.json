@@ -1,16 +1,24 @@
 {
   "actions": [
     {
+      "type": "retrain",
+      "reason": "MAE = 0.292 > threshold 0.2"
+    },
+    {
       "type": "recalibrate",
-      "reason": "ECE = 0.168 > threshold 0.1"
+      "reason": "ECE = 0.723 > threshold 0.1"
+    },
+    {
+      "type": "retrain",
+      "reason": "Drift detected in fixation_duration_ms, saccade_velocity_deg_s, blink_rate_hz"
     },
     {
       "type": "investigate",
-      "reason": "Outlier ratio = 0.051 > 0.05"
+      "reason": "Outlier ratio = 0.100 > 0.05"
     }
   ],
   "summary": {
-    "retrain_needed": false,
+    "retrain_needed": true,
     "recalibration_needed": true,
     "pipeline_check": true
   }

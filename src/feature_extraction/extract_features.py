@@ -14,9 +14,11 @@ from .gaze_features.features import compute_per_second_aggregates
 from .gaze_features.mediapipe_eye import process_video_to_per_second
 
 
+DEFAULT_ARGAZE_ROOT = (Path(__file__).resolve().parents[2] / "data" / "raw" / "ARGaze")
+
 def build_parser() -> argparse.ArgumentParser:
 	p = argparse.ArgumentParser(prog="extract-features", description="Feature extraction into data/processed")
-	p.add_argument("--argaze-root", default=str(Path("data/raw/ARGaze")), help="ARGaze root under data/raw")
+	p.add_argument("--argaze-root", default=str(DEFAULT_ARGAZE_ROOT), help="ARGaze root under data/raw")
 	p.add_argument("--write-ref", action="store_true", help="Write ref.parquet from ARGaze Scene 2")
 	p.add_argument("--video", default=None, help="Path to video to process (auto-discovers under data/demo_videos/ or data/webcam.mp4)")
 	p.add_argument("--video-out", default=str(Path("data/processed/current.parquet")))

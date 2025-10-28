@@ -22,7 +22,8 @@ def generate_model_card(run_yaml: str, version_num: str = "V.1.0"):
     metrics_path = out_dir / "metrics.json"
     drift_path = out_dir / "drift_report.json"
     feedback_path = out_dir / "feedback_report.json"
-    base_card_path = Path("/home/rabink1/D1/gemhd/GEM-HD/src/evaluation_agent/config/model_card.yaml")
+    # Use project-relative template to be cross-platform
+    base_card_path = (Path(__file__).resolve().parent / "config" / "model_card.yaml").resolve()
 
     missing = [p for p in [metrics_path, drift_path, feedback_path, base_card_path] if not p.exists()]
     if missing:

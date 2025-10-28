@@ -26,9 +26,9 @@ window_size = st.sidebar.slider("Rolling window size", 20, 100, 50)
 st.sidebar.markdown("⏱ Auto-refresh enabled — watching `results/` folder")
 
 # --------------------------------
-# Path Configuration
+# Path Configuration (project-relative)
 # --------------------------------
-BASE_DIR = Path("/home/rabink1/D1/gemhd/GEM-HD")
+BASE_DIR = Path(__file__).resolve().parent
 RESULTS_DIR = BASE_DIR / "results"
 PLOTS_DIR = RESULTS_DIR / "plots"
 FIGURES_DIR = RESULTS_DIR / "figures"
@@ -73,11 +73,24 @@ def get_frame():
 # Initialize Conformal Model and Buffers
 # --------------------------------
 conf_reg = ConformalRegressor(alpha=alpha)
-# Use dummy calibration if needed
-try:
-    ref_df = pd.read_parquet(BASE_DIR / "src/evaluation_agent/data/processed/ref.parquet")
-    conf_reg.fit_calibration(ref_df["ema_engagement"], ref_df["y_pred"])
-except Exception:
+# Use available processed data to calibrate if present; fallback to dummy
+calib_paths = [
+    BASE_DIR / "data/processed/current_with_pred.parquet",
+    BASE_DIR / "data/processed/ref.parquet",
+    BASE_DIR / "src/evaluation_agent/data/processed/ref.parquet",
+]
+calibrated = False
+for p in calib_paths:
+    try:
+        if p.exists():
+            df = pd.read_parquet(p)
+            if {"ema_engagement", "y_pred"}.issubset(df.columns):
+                conf_reg.fit_calibration(df["ema_engagement"], df["y_pred"])
+                calibrated = True
+                break
+    except Exception:
+        pass
+if not calibrated:
     conf_reg.fit_calibration(np.random.rand(200), np.random.rand(200))
 
 y_pred_buffer = deque(maxlen=window_size)

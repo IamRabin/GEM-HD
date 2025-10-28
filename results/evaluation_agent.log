@@ -122,3 +122,83 @@
 2025-10-27 17:36:10,986 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
 2025-10-27 17:36:11,074 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
 2025-10-27 17:36:11,075 — GEMHD — INFO — ✅ GEM-HD pipeline complete. Model card ready in results/
+2025-10-28 09:33:36,933 — GEMHD — INFO — 🚀 Starting GEM-HD Evaluation Pipeline
+2025-10-28 09:33:36,973 — GEMHD — INFO — 🔹 Phase 1: Loading and cleaning data...
+2025-10-28 09:33:37,154 — GEMHD — INFO — 🔹 Phase 2: Running metrics computation...
+2025-10-28 09:33:37,161 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-28 09:33:37,161 — GEMHD — INFO — Loaded configuration: src\evaluation_agent\config\run.yaml
+2025-10-28 09:33:37,161 — GEMHD — INFO — Current dataset: C:\Users\shamm\Documents\Codes\ACMHack\data\processed\current_with_pred.parquet
+2025-10-28 09:33:37,161 — GEMHD — INFO — Results will be saved to: C:\Users\shamm\Documents\Codes\ACMHack\results
+2025-10-28 09:33:37,204 — GEMHD — INFO — Loaded 10 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'y_pred', 'y_std', 'ema_engagement']
+2025-10-28 09:33:40,229 — GEMHD — INFO — 🔹 Phase 3: Running drift detection...
+2025-10-28 09:33:40,237 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-28 09:33:40,314 — GEMHD — INFO — Loaded reference: 0 rows, current: 10 rows
+2025-10-28 09:33:40,314 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-28 09:40:23,787 — GEMHD — INFO — 🚀 Starting GEM-HD Evaluation Pipeline
+2025-10-28 09:40:23,787 — GEMHD — INFO — 🔹 Phase 1: Loading and cleaning data...
+2025-10-28 09:40:24,267 — GEMHD — INFO — 🔹 Phase 2: Running metrics computation...
+2025-10-28 09:40:24,277 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-28 09:40:24,278 — GEMHD — INFO — Loaded configuration: src\evaluation_agent\config\run.yaml
+2025-10-28 09:40:24,278 — GEMHD — INFO — Current dataset: C:\Users\shamm\Documents\Codes\ACMHack\data\processed\current_with_pred.parquet
+2025-10-28 09:40:24,278 — GEMHD — INFO — Results will be saved to: C:\Users\shamm\Documents\Codes\ACMHack\results
+2025-10-28 09:40:24,293 — GEMHD — INFO — Loaded 10 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'y_pred', 'y_std', 'ema_engagement']
+2025-10-28 09:40:26,027 — GEMHD — INFO — 🔹 Phase 3: Running drift detection...
+2025-10-28 09:40:26,042 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-28 09:40:26,185 — GEMHD — INFO — Loaded reference: 0 rows, current: 10 rows
+2025-10-28 09:40:26,185 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-28 09:43:42,283 — GEMHD — INFO — 🚀 Starting GEM-HD Evaluation Pipeline
+2025-10-28 09:43:42,286 — GEMHD — INFO — 🔹 Phase 1: Loading and cleaning data...
+2025-10-28 09:43:42,479 — GEMHD — INFO — 🔹 Phase 2: Running metrics computation...
+2025-10-28 09:43:42,487 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-28 09:43:42,487 — GEMHD — INFO — Loaded configuration: src\evaluation_agent\config\run.yaml
+2025-10-28 09:43:42,487 — GEMHD — INFO — Current dataset: C:\Users\shamm\Documents\Codes\ACMHack\data\processed\current_with_pred.parquet
+2025-10-28 09:43:42,487 — GEMHD — INFO — Results will be saved to: C:\Users\shamm\Documents\Codes\ACMHack\results
+2025-10-28 09:43:42,496 — GEMHD — INFO — Loaded 10 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'y_pred', 'y_std', 'ema_engagement']
+2025-10-28 09:43:44,461 — GEMHD — INFO — 🔹 Phase 3: Running drift detection...
+2025-10-28 09:43:44,463 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-28 09:43:44,553 — GEMHD — INFO — Loaded reference: 765 rows, current: 10 rows
+2025-10-28 09:43:44,553 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-28 09:43:44,797 — GEMHD — INFO — Drift report saved → C:\Users\shamm\Documents\Codes\ACMHack\results\drift_report.json
+2025-10-28 09:43:45,269 — GEMHD — INFO —  Drift summary plot saved → C:\Users\shamm\Documents\Codes\ACMHack\results\plots\drift_summary.png
+2025-10-28 09:43:45,269 — GEMHD — INFO — Detected drift in 3/4 features.
+2025-10-28 09:43:45,269 — GEMHD — INFO — Mahalanobis mean: 234.568 | Outlier ratio: 0.100
+2025-10-28 09:43:45,269 — GEMHD — INFO — 🔹 Phase 4: Running feedback agent...
+2025-10-28 09:43:45,276 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-28 09:43:45,322 — GEMHD — WARNING — MAE 0.292 > 0.2 → Retraining suggested
+2025-10-28 09:43:45,322 — GEMHD — WARNING — ECE 0.723 > 0.1 → Recalibration advised
+2025-10-28 09:43:45,322 — GEMHD — WARNING — Drift detected in 3 features → Retraining suggested
+2025-10-28 09:43:45,322 — GEMHD — WARNING — Outlier ratio 0.100 > 0.05 → Investigate data pipeline
+2025-10-28 09:43:45,326 — GEMHD — INFO — Feedback report saved → C:\Users\shamm\Documents\Codes\ACMHack\results\feedback_report.json
+2025-10-28 09:43:45,753 — GEMHD — INFO — 📊 Feedback summary table saved as PNG → C:\Users\shamm\Documents\Codes\ACMHack\results\plots\feedback_table.png
+2025-10-28 09:43:45,753 — GEMHD — INFO — 🔹 Phase 5: Generating model card...
+2025-10-28 09:43:45,753 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-28 09:43:45,845 — GEMHD — INFO — 🧾 Model card YAML generated → C:\Users\shamm\Documents\Codes\ACMHack\results\model_card_filled.yaml
+2025-10-28 09:44:49,471 — GEMHD — INFO — 🚀 Starting GEM-HD Evaluation Pipeline
+2025-10-28 09:44:49,471 — GEMHD — INFO — 🔹 Phase 1: Loading and cleaning data...
+2025-10-28 09:44:49,647 — GEMHD — INFO — 🔹 Phase 2: Running metrics computation...
+2025-10-28 09:44:49,653 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-28 09:44:49,653 — GEMHD — INFO — Loaded configuration: src\evaluation_agent\config\run.yaml
+2025-10-28 09:44:49,655 — GEMHD — INFO — Current dataset: C:\Users\shamm\Documents\Codes\ACMHack\data\processed\current_with_pred.parquet
+2025-10-28 09:44:49,655 — GEMHD — INFO — Results will be saved to: C:\Users\shamm\Documents\Codes\ACMHack\results
+2025-10-28 09:44:49,668 — GEMHD — INFO — Loaded 10 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'y_pred', 'y_std', 'ema_engagement']
+2025-10-28 09:44:50,724 — GEMHD — INFO — 🔹 Phase 3: Running drift detection...
+2025-10-28 09:44:50,724 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-28 09:44:50,799 — GEMHD — INFO — Loaded reference: 733 rows, current: 10 rows
+2025-10-28 09:44:50,799 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-28 09:44:50,973 — GEMHD — INFO — Drift report saved → C:\Users\shamm\Documents\Codes\ACMHack\results\drift_report.json
+2025-10-28 09:44:51,332 — GEMHD — INFO —  Drift summary plot saved → C:\Users\shamm\Documents\Codes\ACMHack\results\plots\drift_summary.png
+2025-10-28 09:44:51,332 — GEMHD — INFO — Detected drift in 3/4 features.
+2025-10-28 09:44:51,332 — GEMHD — INFO — Mahalanobis mean: 194.952 | Outlier ratio: 0.100
+2025-10-28 09:44:51,332 — GEMHD — INFO — 🔹 Phase 4: Running feedback agent...
+2025-10-28 09:44:51,338 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-28 09:44:51,369 — GEMHD — WARNING — MAE 0.292 > 0.2 → Retraining suggested
+2025-10-28 09:44:51,369 — GEMHD — WARNING — ECE 0.723 > 0.1 → Recalibration advised
+2025-10-28 09:44:51,369 — GEMHD — WARNING — Drift detected in 3 features → Retraining suggested
+2025-10-28 09:44:51,369 — GEMHD — WARNING — Outlier ratio 0.100 > 0.05 → Investigate data pipeline
+2025-10-28 09:44:51,375 — GEMHD — INFO — Feedback report saved → C:\Users\shamm\Documents\Codes\ACMHack\results\feedback_report.json
+2025-10-28 09:44:51,628 — GEMHD — INFO — 📊 Feedback summary table saved as PNG → C:\Users\shamm\Documents\Codes\ACMHack\results\plots\feedback_table.png
+2025-10-28 09:44:51,628 — GEMHD — INFO — 🔹 Phase 5: Generating model card...
+2025-10-28 09:44:51,628 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-28 09:44:51,645 — GEMHD — INFO — 🧾 Model card YAML generated → C:\Users\shamm\Documents\Codes\ACMHack\results\model_card_filled.yaml
+2025-10-28 09:44:51,838 — GEMHD — INFO — Model card HTML generated → C:\Users\shamm\Documents\Codes\ACMHack\results\model_card_V.1.0.html
+2025-10-28 09:44:51,838 — GEMHD — INFO — ✅ GEM-HD pipeline complete. Model card ready in results/

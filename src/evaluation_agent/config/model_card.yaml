@@ -1,5 +1,6 @@
 model_version: V.1.0
-logo_path: /home/rabink1/D1/gemhd/GEM-HD/results/figures/logo.png
+# Use a generated plot as a logo placeholder to avoid missing file errors
+logo_path: results/plots/drift_summary.png
 
 dataset_name: Gaze & Affect Behavioral Dataset
 num_target_class: Regression (continuous affect level)
@@ -54,13 +55,13 @@ uncertainty_describe: |
   Confidence intervals around predictions reflect model’s self-assessed reliability.
   High ECE values indicate calibration drift requiring recalibration.
 
-# Visualization paths
-data_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/data_dist.png
-loss_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/data_dist.png
-acc_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/calibration_curve.png
-cm_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/drift_summary.png
-uncertainty_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/err_vs_uncertainty.png
-result_table_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/feedback_table.png
+# Visualization paths (relative to project root)
+data_figpath: results/plots/drift_summary.png
+loss_figpath: results/plots/drift_summary.png
+acc_figpath: results/plots/calibration_curve.png
+cm_figpath: results/plots/drift_summary.png
+uncertainty_figpath: results/plots/err_vs_uncertainty.png
+result_table_figpath: results/plots/feedback_table.png
 
 
 

@@ -26,11 +26,15 @@ def load_json(path):
         return json.load(f)
 
 def validate_schema(df, name):
+    # Allow alias: map epistemic_std → y_std if needed
+    if "y_std" not in df.columns and "epistemic_std" in df.columns:
+        df = df.rename(columns={"epistemic_std": "y_std"})
+
     missing = [c for c in EXPECTED_COLS if c not in df.columns]
     if missing:
         print(f"⚠️  {name}: Missing columns {missing}")
     # Keep only expected columns
-    df = df[[c for c in EXPECTED_COLS if c in df.columns]]
+    df = df[[c for c in EXPECTED_COLS if c in df.columns]].copy()
     # Ensure numeric
     for c in df.columns:
         df[c] = pd.to_numeric(df[c], errors='coerce')
@@ -38,12 +42,28 @@ def validate_schema(df, name):
 
 
 def clean_data(df):
-    # Fill NaN with column means
-    df = df.fillna(df.mean(numeric_only=True))
-    # Remove extreme outliers (3σ rule)
-    for col in df.select_dtypes(include=[np.number]).columns:
-        mean, std = df[col].mean(), df[col].std()
-        df = df[(df[col] >= mean - 3*std) & (df[col] <= mean + 3*std)]
+    # Work on a copy to avoid chained assignment issues
+    df = df.copy()
+    num_cols = df.select_dtypes(include=[np.number]).columns
+
+    # Replace all-NaN numeric columns with zeros to keep rows (e.g., blink_rate_hz from ARGaze)
+    for col in num_cols:
+        if df[col].isna().all():
+            df[col] = 0.0
+
+    # Fill remaining NaNs with column means
+    df[num_cols] = df[num_cols].apply(lambda s: s.fillna(s.mean()))
+
+    # Remove extreme outliers (3σ rule) only for columns with finite std > 0
+    if len(df) > 0:
+        mask = pd.Series(True, index=df.index)
+        for col in num_cols:
+            mean = df[col].mean()
+            std = df[col].std()
+            if np.isfinite(mean) and np.isfinite(std) and std > 0:
+                mask &= (df[col] >= mean - 3*std) & (df[col] <= mean + 3*std)
+        df = df[mask]
+
     return df.reset_index(drop=True)
 
 
