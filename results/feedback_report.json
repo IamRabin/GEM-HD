@@ -10,7 +10,7 @@
     },
     {
       "type": "retrain",
-      "reason": "Drift detected in fixation_duration_ms, saccade_velocity_deg_s, blink_rate_hz"
+      "reason": "Drift detected in fixation_duration_ms, saccade_velocity_deg_s, blink_rate_hz, scanpath_entropy"
     },
     {
       "type": "investigate",

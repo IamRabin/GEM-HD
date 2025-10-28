@@ -67,6 +67,8 @@ performance_comments: 'Evaluation metrics were obtained on the held-out test set
 
   - blink_rate_hz
 
+  - scanpath_entropy
+
   Outlier_ratio: 0.1
 
   Recommended_actions:
