@@ -33,6 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent
 RESULTS_DIR = BASE_DIR / "results"
 PLOTS_DIR = RESULTS_DIR / "plots"
 FIGURES_DIR = RESULTS_DIR / "figures"
+LIVE_FRAME_FILE = FIGURES_DIR / "live.jpg"
 
 METRICS_FILE = RESULTS_DIR / "metrics.json"
 DRIFT_FILE = RESULTS_DIR / "drift_report.json"
@@ -108,19 +109,37 @@ def load_results():
 
 def get_frame():
     """Capture a frame from webcam or fallback to placeholder."""
-    cap = cv2.VideoCapture(0)
-    success, frame = cap.read()
-    cap.release()
-    if success:
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(frame)
-    else:
+    # Prefer a live frame written by the streaming process to avoid webcam contention
+    try:
+        if LIVE_FRAME_FILE.exists():
+            # If the live frame is too old (>5s), fall back to direct capture
+            mtime = LIVE_FRAME_FILE.stat().st_mtime
+            if time.time() - mtime < 5.0:
+                return Image.open(LIVE_FRAME_FILE)
+    except Exception:
+        pass
+
+    # Fallback: try reading directly from webcam
+    try:
+        cap = cv2.VideoCapture(0)
+        success, frame = cap.read()
+        cap.release()
+        if success:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            return Image.fromarray(frame)
+    except Exception:
+        pass
+
+    # Final fallback: placeholder image or gray canvas
+    try:
+        if PLACEHOLDER_IMAGE.exists():
+            img = Image.open(PLACEHOLDER_IMAGE)
+        else:
+            # Fallback simple placeholder if image is missing
+            img = Image.fromarray(np.ones((360, 640, 3), dtype=np.uint8) * 220)
+    except Exception:
         try:
-            if PLACEHOLDER_IMAGE.exists():
-                img = Image.open(PLACEHOLDER_IMAGE)
-            else:
-                # Fallback simple placeholder if image is missing
-                img = Image.fromarray(np.ones((360, 640, 3), dtype=np.uint8) * 220)
+            img = Image.fromarray(np.ones((360, 640, 3), dtype=np.uint8) * 220)
         except Exception:
             img = Image.fromarray(np.ones((360, 640, 3), dtype=np.uint8) * 220)
     return img

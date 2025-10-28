@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """
 Lightweight inference bridge using scikit-learn to generate
-current_with_pred.parquet with required columns (y_pred, y_std, ema_engagement).
+`data/processed/current_with_pred.parquet` with required columns
+(`y_pred`, `y_std`, `ema_engagement`).
 
-It trains a small MLPRegressor on ref.parquet using ema_engagement as the
-target when available; otherwise, it derives a stable proxy from the features.
-Uncertainty is estimated with a split-conformal style residual quantile on the
-reference set.
+Supports a streaming mode (`--stream`) that appends predictions for newly
+observed rows in `current.parquet` every `--interval` seconds so the
+dashboard can update continuously.
+
+Training: a small MLPRegressor on `ref.parquet` using `ema_engagement` as the
+target when available; otherwise, a proxy is derived from features. Uncertainty
+is estimated via a residual quantile on the reference set.
 """
  
 import argparse
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Optional
+import time
 
 import numpy as np
 import pandas as pd
