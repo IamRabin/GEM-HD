@@ -326,6 +326,47 @@ while True:
                     ];
                     const leftWallX = 30, rightWallX = W - 30, laneX = W - 70;
 
+                    // Space-cadet style theming helpers
+                    const stars = Array.from({{length: 80}}, () => ({{ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.5+0.3 }}));
+                    function drawTheme() {{
+                        // Starfield
+                        for (const s of stars) {{
+                            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+                        }}
+                        // Bottom plasma glow
+                        const grad = ctx.createRadialGradient(W*0.5, H*0.98, 10, W*0.5, H*0.8, 220);
+                        grad.addColorStop(0, 'rgba(168,85,247,0.35)');
+                        grad.addColorStop(1, 'rgba(168,85,247,0)');
+                        ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(W*0.5, H*0.98, 240, Math.PI, Math.PI*2); ctx.fill();
+                        // Neon rails
+                        ctx.strokeStyle = '#8b5cf6'; ctx.lineWidth = 4; ctx.beginPath();
+                        ctx.moveTo(leftWallX+8, H-220); ctx.quadraticCurveTo(80, H-420, 70, 120); ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(rightWallX-8, H-220); ctx.quadraticCurveTo(W-80, H-420, W-70, 120); ctx.stroke();
+                        // Inlane arrows
+                        ctx.fillStyle = '#10b981';
+                        ctx.beginPath(); ctx.moveTo(70, H-150); ctx.lineTo(110, H-120); ctx.lineTo(70, H-110); ctx.closePath(); ctx.fill();
+                        ctx.beginPath(); ctx.moveTo(W-70, H-150); ctx.lineTo(W-110, H-120); ctx.lineTo(W-70, H-110); ctx.closePath(); ctx.fill();
+                        // Center ring lights
+                        const cx = W*0.5, cy = H*0.55, R = 70;
+                        for (let i=0;i<16;i++) {{
+                            const a = i/16 * Math.PI*2; const px = cx + Math.cos(a)*R; const py = cy + Math.sin(a)*R;
+                            ctx.fillStyle = i%2? '#fde047' : '#fb7185'; ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2); ctx.fill();
+                        }}
+                    }}
+
+                    function drawBumper(b) {{
+                        // Bullseye bumper with glow
+                        const g = ctx.createRadialGradient(b.x, b.y, 2, b.x, b.y, b.r*1.4);
+                        g.addColorStop(0, 'rgba(59,130,246,0.6)');
+                        g.addColorStop(1, 'rgba(59,130,246,0)');
+                        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(b.x, b.y, b.r*1.4, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.arc(b.x, b.y, b.r*0.7, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(b.x, b.y, b.r*0.42, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(b.x, b.y, b.r*0.22, 0, Math.PI*2); ctx.fill();
+                    }}
+
                     function launch() {{
                         if (!ball.inPlay) {{
                             const p = Math.min(1, Math.max(0.2, power || (autoRun ? 0.6 : 0.4)));
@@ -375,7 +416,7 @@ while True:
                     function drawFlipper(flip) {{
                         const tx = flip.px + Math.cos(flip.angle) * flipperLen;
                         const ty = flip.py + Math.sin(flip.angle) * flipperLen;
-                        ctx.strokeStyle = '#eab308';
+                        ctx.strokeStyle = '#ff3b30';
                         ctx.lineWidth = flipperWidth;
                         ctx.lineCap = 'round';
                         ctx.beginPath();
@@ -388,17 +429,13 @@ while True:
                         if (paused) {{ requestAnimationFrame(step); return; }}
                         ctx.clearRect(0,0,W,H);
                         ctx.fillStyle = '#0b1220'; ctx.fillRect(0,0,W,H);
+                        drawTheme();
                         ctx.fillStyle = '#374151';
                         ctx.fillRect(leftWallX-6, 0, 12, H);
                         ctx.fillRect(rightWallX-6, 0, 12, H);
                         ctx.fillStyle = '#4b5563'; ctx.fillRect(laneX-2, H-220, 4, 220);
 
-                        for (const b of bumpers) {{
-                            ctx.beginPath();
-                            const g = ctx.createRadialGradient(b.x, b.y, 2, b.x, b.y, b.r);
-                            g.addColorStop(0, '#1d4ed8'); g.addColorStop(1, '#1e3a8a');
-                            ctx.fillStyle = g; ctx.arc(b.x, b.y, b.r, 0, Math.PI*2); ctx.fill();
-                        }}
+                        for (const b of bumpers) {{ drawBumper(b); }}
 
                         const leftTarget = keys.left ? leftFlipper.active : leftFlipper.rest;
                         const rightTarget = keys.right ? rightFlipper.active : rightFlipper.rest;
