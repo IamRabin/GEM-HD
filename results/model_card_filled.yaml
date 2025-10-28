@@ -1,5 +1,5 @@
 model_version: V.1.0
-logo_path: /home/rabink1/D1/gemhd/GEM-HD/results/figures/logo.png
+logo_path: results/plots/drift_summary.png
 dataset_name: Gaze & Affect Behavioral Dataset
 num_target_class: Regression (continuous affect level)
 ground_truth: Self-reported affect / cognitive state
@@ -51,21 +51,31 @@ performance_comments: 'Evaluation metrics were obtained on the held-out test set
 
   <h3>Performance Metrics Summary</h3>
 
-  MAE: 0.03816133909353038
+  MAE: 0.2918338024698442
 
-  RMSE: 0.04856322158981691
+  RMSE: 0.3139436491436929
 
-  ECE: 0.16791042926420632
+  ECE: 0.7226022975656561
 
-  Uncertainty_Error_SpearmanR: -0.013265105373252983
+  Uncertainty_Error_SpearmanR: .nan
 
-  Detected_drift_features: []
+  Detected_drift_features:
 
-  Outlier_ratio: 0.05115089514066496
+  - fixation_duration_ms
+
+  - saccade_velocity_deg_s
+
+  - blink_rate_hz
+
+  Outlier_ratio: 0.1
 
   Recommended_actions:
 
+  - retrain
+
   - recalibrate
+
+  - retrain
 
   - investigate
 
@@ -73,12 +83,12 @@ performance_comments: 'Evaluation metrics were obtained on the held-out test set
 uncertainty_describe: "Confidence intervals around predictions reflect model\u2019\
   s self-assessed reliability.\nHigh ECE values indicate calibration drift requiring\
   \ recalibration.\n"
-data_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/data_dist.png
-loss_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/data_dist.png
-acc_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/calibration_curve.png
-cm_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/drift_summary.png
-uncertainty_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/err_vs_uncertainty.png
-result_table_figpath: /home/rabink1/D1/gemhd/GEM-HD/results/plots/feedback_table.png
+data_figpath: results/plots/drift_summary.png
+loss_figpath: results/plots/drift_summary.png
+acc_figpath: results/plots/calibration_curve.png
+cm_figpath: results/plots/drift_summary.png
+uncertainty_figpath: results/plots/err_vs_uncertainty.png
+result_table_figpath: results/plots/feedback_table.png
 references: "<ol>\n  <li>Mitchell, M. et al. (2019). Model cards for model reporting.\n\
   \      In Proceedings of the Conference on Fairness, Accountability, and Transparency\
   \ (pp. 220\u2013229).</li>\n  <li>LucidJun Inc. Internal GEM-HD Documentation (2025).</li>\n\
