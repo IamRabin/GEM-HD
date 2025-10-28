@@ -1,8 +1,8 @@
 
 paths:
-  ref_data: ~/D1/gemhd/GEM-HD/src/evaluation_agent/data/processed/ref.parquet
-  current_data: ~/D1/gemhd/GEM-HD/src/evaluation_agent/data/processed/current_with_pred.parquet
-  output_dir: ~/D1/gemhd/GEM-HD/results
+  ref_data: data/processed/ref.parquet
+  current_data: data/processed/current_with_pred.parquet
+  output_dir: results
 
 
 evaluation:

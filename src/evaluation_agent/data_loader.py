@@ -26,6 +26,10 @@ def load_json(path):
         return json.load(f)
 
 def validate_schema(df, name):
+    # Allow alias: map epistemic_std → y_std if needed
+    if "y_std" not in df.columns and "epistemic_std" in df.columns:
+        df = df.rename(columns={"epistemic_std": "y_std"})
+
     missing = [c for c in EXPECTED_COLS if c not in df.columns]
     if missing:
         print(f"⚠️  {name}: Missing columns {missing}")
