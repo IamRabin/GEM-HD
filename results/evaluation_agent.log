@@ -1,0 +1,124 @@
+2025-10-27 12:13:52,804 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-27 12:13:52,805 — GEMHD — INFO — Loaded configuration: /home/rabink1/D1/gemhd/GEM-HD/src/evaluation_agent/config/run.yaml
+2025-10-27 12:13:52,807 — GEMHD — INFO — Current dataset: /global/D1/homes/rabink1/gemhd/GEM-HD/src/evaluation_agent/data/processed/current_with_pred.parquet
+2025-10-27 12:13:52,810 — GEMHD — INFO — Results will be saved to: /global/D1/homes/rabink1/gemhd/GEM-HD/results
+2025-10-27 12:14:54,179 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-27 12:14:54,181 — GEMHD — INFO — Loaded configuration: /home/rabink1/D1/gemhd/GEM-HD/src/evaluation_agent/config/run.yaml
+2025-10-27 12:14:54,182 — GEMHD — INFO — Current dataset: /global/D1/homes/rabink1/gemhd/GEM-HD/src/evaluation_agent/data/processed/current_with_pred.parquet
+2025-10-27 12:14:54,193 — GEMHD — INFO — Results will be saved to: /global/D1/homes/rabink1/gemhd/GEM-HD/results
+2025-10-27 12:14:54,298 — GEMHD — INFO — Loaded 400 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'ema_engagement', 'y_pred', 'y_std']
+2025-10-27 12:21:02,923 — GEMHD — INFO — [Phase 3: Drift Detection]
+2025-10-27 12:21:03,074 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-27 12:22:39,862 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-27 12:22:39,990 — GEMHD — INFO — Loaded reference: 491 rows, current: 392 rows
+2025-10-27 12:22:39,991 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-27 12:22:40,397 — GEMHD — INFO — ✅ Drift report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/drift_report.json
+2025-10-27 12:22:40,397 — GEMHD — INFO — Detected drift in 0/4 features.
+2025-10-27 12:22:40,398 — GEMHD — INFO — Mahalanobis mean: 4.130 | Outlier ratio: 0.051
+2025-10-27 12:41:40,132 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-27 12:41:40,134 — GEMHD — WARNING — ECE 0.167 > 0.1 → Recalibration advised
+2025-10-27 12:41:40,135 — GEMHD — WARNING — Outlier ratio 0.051 > 0.05 → Investigate data pipeline
+2025-10-27 12:41:40,136 — GEMHD — INFO — Feedback report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/feedback_report.json
+2025-10-27 12:57:06,398 — GEMHD — INFO — [Phase 5: Model Card Generation (DREAMS_MC format)]
+2025-10-27 12:57:40,874 — GEMHD — INFO — [Phase 5: Model Card Generation (DREAMS_MC format)]
+2025-10-27 13:21:54,102 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-27 13:21:54,237 — GEMHD — INFO — Loaded reference: 491 rows, current: 392 rows
+2025-10-27 13:21:54,237 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-27 13:21:54,564 — GEMHD — INFO — Drift report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/drift_report.json
+2025-10-27 13:21:55,926 — GEMHD — INFO —  Drift summary plot saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/plots/drift_summary.png
+2025-10-27 13:21:55,927 — GEMHD — INFO — Detected drift in 0/4 features.
+2025-10-27 13:21:55,928 — GEMHD — INFO — Mahalanobis mean: 4.130 | Outlier ratio: 0.051
+2025-10-27 14:09:56,676 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-27 14:09:56,693 — GEMHD — WARNING — ECE 0.167 > 0.1 → Recalibration advised
+2025-10-27 14:09:56,694 — GEMHD — WARNING — Outlier ratio 0.051 > 0.05 → Investigate data pipeline
+2025-10-27 14:09:56,696 — GEMHD — INFO — Feedback report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/feedback_report.json
+2025-10-27 14:14:00,967 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-27 14:14:00,969 — GEMHD — WARNING — ECE 0.167 > 0.1 → Recalibration advised
+2025-10-27 14:14:00,969 — GEMHD — WARNING — Outlier ratio 0.051 > 0.05 → Investigate data pipeline
+2025-10-27 14:14:00,971 — GEMHD — INFO — Feedback report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/feedback_report.json
+2025-10-27 14:14:01,475 — GEMHD — INFO — 📊 Feedback summary table saved as PNG → /global/D1/homes/rabink1/gemhd/GEM-HD/results/plots/feedback_table.png
+2025-10-27 14:18:12,327 — GEMHD — INFO — [Phase 5: Model Card Generation (DREAMS_MC format)]
+2025-10-27 14:18:39,433 — GEMHD — INFO — [Phase 5: Model Card Generation (DREAMS_MC format)]
+2025-10-27 14:20:14,225 — GEMHD — INFO — [Phase 5: Model Card Generation (DREAMS_MC format)]
+2025-10-27 14:20:48,192 — GEMHD — INFO — [Phase 5: Model Card Generation (DREAMS_MC format)]
+2025-10-27 14:20:48,268 — GEMHD — INFO — Model card generated successfully → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card.html
+2025-10-27 14:57:14,982 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 14:57:14,983 — GEMHD — ERROR —  Missing required files: [PosixPath('src/evaluation_agent/configs/model_card.yaml')]
+2025-10-27 14:57:36,671 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 14:57:36,673 — GEMHD — ERROR —  Missing required files: [PosixPath('src/evaluation_agent/config/model_card.yaml')]
+2025-10-27 14:58:13,874 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 14:58:13,875 — GEMHD — ERROR —  Missing required files: [PosixPath('src/evaluation_agent/config/model_card.yaml')]
+2025-10-27 14:59:54,783 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 14:59:54,804 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 14:59:54,903 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 15:07:50,658 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 15:07:50,672 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 15:09:53,458 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 15:09:53,494 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 15:09:54,027 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 15:37:03,759 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 15:37:03,774 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 15:37:03,840 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 15:44:46,256 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 15:44:46,270 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 15:44:46,308 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 15:48:10,397 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 15:48:10,415 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 15:48:10,458 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 15:55:45,837 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 15:55:45,859 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 15:55:45,935 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 16:09:47,228 — GEMHD — INFO — 🚀 Starting GEM-HD Evaluation Pipeline
+2025-10-27 16:09:47,229 — GEMHD — INFO — 🔹 Phase 1: Loading and cleaning data...
+2025-10-27 16:09:47,970 — GEMHD — INFO — 🔹 Phase 2: Running metrics computation...
+2025-10-27 16:09:47,977 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-27 16:09:47,977 — GEMHD — INFO — Loaded configuration: /home/rabink1/D1/gemhd/GEM-HD/src/evaluation_agent/config/run.yaml
+2025-10-27 16:09:47,979 — GEMHD — INFO — Current dataset: /global/D1/homes/rabink1/gemhd/GEM-HD/src/evaluation_agent/data/processed/current_with_pred.parquet
+2025-10-27 16:09:47,980 — GEMHD — INFO — Results will be saved to: /global/D1/homes/rabink1/gemhd/GEM-HD/results
+2025-10-27 16:09:47,988 — GEMHD — INFO — Loaded 392 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'y_pred', 'y_std', 'ema_engagement']
+2025-10-27 16:09:50,045 — GEMHD — INFO — 🔹 Phase 3: Running drift detection...
+2025-10-27 16:09:50,050 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-27 16:09:50,097 — GEMHD — INFO — Loaded reference: 489 rows, current: 391 rows
+2025-10-27 16:09:50,102 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-27 16:09:50,491 — GEMHD — INFO — Drift report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/drift_report.json
+2025-10-27 16:09:51,477 — GEMHD — INFO —  Drift summary plot saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/plots/drift_summary.png
+2025-10-27 16:09:51,478 — GEMHD — INFO — Detected drift in 0/4 features.
+2025-10-27 16:09:51,478 — GEMHD — INFO — Mahalanobis mean: 4.224 | Outlier ratio: 0.051
+2025-10-27 16:09:51,479 — GEMHD — INFO — 🔹 Phase 4: Running feedback agent...
+2025-10-27 16:09:51,486 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-27 16:09:51,489 — GEMHD — WARNING — ECE 0.168 > 0.1 → Recalibration advised
+2025-10-27 16:09:51,490 — GEMHD — WARNING — Outlier ratio 0.051 > 0.05 → Investigate data pipeline
+2025-10-27 16:09:51,491 — GEMHD — INFO — Feedback report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/feedback_report.json
+2025-10-27 16:09:51,847 — GEMHD — INFO — 📊 Feedback summary table saved as PNG → /global/D1/homes/rabink1/gemhd/GEM-HD/results/plots/feedback_table.png
+2025-10-27 16:09:51,848 — GEMHD — INFO — 🔹 Phase 5: Generating model card...
+2025-10-27 16:09:51,853 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 16:09:51,874 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 16:09:51,905 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 16:09:51,906 — GEMHD — INFO — ✅ GEM-HD pipeline complete. Model card ready in results/
+2025-10-27 17:36:08,020 — GEMHD — INFO — 🚀 Starting GEM-HD Evaluation Pipeline
+2025-10-27 17:36:08,060 — GEMHD — INFO — 🔹 Phase 1: Loading and cleaning data...
+2025-10-27 17:36:08,228 — GEMHD — INFO — 🔹 Phase 2: Running metrics computation...
+2025-10-27 17:36:08,233 — GEMHD — INFO — [Phase 2: Metrics Computation]
+2025-10-27 17:36:08,234 — GEMHD — INFO — Loaded configuration: config/run.yaml
+2025-10-27 17:36:08,235 — GEMHD — INFO — Current dataset: /global/D1/homes/rabink1/gemhd/GEM-HD/src/evaluation_agent/data/processed/current_with_pred.parquet
+2025-10-27 17:36:08,236 — GEMHD — INFO — Results will be saved to: /global/D1/homes/rabink1/gemhd/GEM-HD/results
+2025-10-27 17:36:08,242 — GEMHD — INFO — Loaded 391 rows with columns: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy', 'y_pred', 'y_std', 'ema_engagement']
+2025-10-27 17:36:09,584 — GEMHD — INFO — 🔹 Phase 3: Running drift detection...
+2025-10-27 17:36:09,588 — GEMHD — INFO — [Phase 3: Drift & Outlier Detection]
+2025-10-27 17:36:09,629 — GEMHD — INFO — Loaded reference: 489 rows, current: 391 rows
+2025-10-27 17:36:09,630 — GEMHD — INFO — Using 4 features for drift analysis: ['fixation_duration_ms', 'saccade_velocity_deg_s', 'blink_rate_hz', 'scanpath_entropy']
+2025-10-27 17:36:09,854 — GEMHD — INFO — Drift report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/drift_report.json
+2025-10-27 17:36:10,596 — GEMHD — INFO —  Drift summary plot saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/plots/drift_summary.png
+2025-10-27 17:36:10,597 — GEMHD — INFO — Detected drift in 0/4 features.
+2025-10-27 17:36:10,598 — GEMHD — INFO — Mahalanobis mean: 4.224 | Outlier ratio: 0.051
+2025-10-27 17:36:10,599 — GEMHD — INFO — 🔹 Phase 4: Running feedback agent...
+2025-10-27 17:36:10,604 — GEMHD — INFO — [Phase 4: Feedback & Action Suggestion]
+2025-10-27 17:36:10,609 — GEMHD — WARNING — ECE 0.168 > 0.1 → Recalibration advised
+2025-10-27 17:36:10,610 — GEMHD — WARNING — Outlier ratio 0.051 > 0.05 → Investigate data pipeline
+2025-10-27 17:36:10,612 — GEMHD — INFO — Feedback report saved → /global/D1/homes/rabink1/gemhd/GEM-HD/results/feedback_report.json
+2025-10-27 17:36:10,965 — GEMHD — INFO — 📊 Feedback summary table saved as PNG → /global/D1/homes/rabink1/gemhd/GEM-HD/results/plots/feedback_table.png
+2025-10-27 17:36:10,966 — GEMHD — INFO — 🔹 Phase 5: Generating model card...
+2025-10-27 17:36:10,970 — GEMHD — INFO — [ Model Card Generation Started]
+2025-10-27 17:36:10,986 — GEMHD — INFO — 🧾 Model card YAML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_filled.yaml
+2025-10-27 17:36:11,074 — GEMHD — INFO — Model card HTML generated → /global/D1/homes/rabink1/gemhd/GEM-HD/results/model_card_V.1.0.html
+2025-10-27 17:36:11,075 — GEMHD — INFO — ✅ GEM-HD pipeline complete. Model card ready in results/

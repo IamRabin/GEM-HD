@@ -1,0 +1,35 @@
+
+paths:
+  ref_data: ~/D1/gemhd/GEM-HD/src/evaluation_agent/data/processed/ref.parquet
+  current_data: ~/D1/gemhd/GEM-HD/src/evaluation_agent/data/processed/current_with_pred.parquet
+  output_dir: ~/D1/gemhd/GEM-HD/results
+
+
+evaluation:
+  # Number of bins used for calibration curve (higher = smoother curve)
+  n_bins: 21
+  
+  # Whether to generate visual plots (calibration & error-uncertainty)
+  make_plots: true
+  
+  # Whether to save metrics as JSON (always true for Evaluation Agent)
+  save_json: true
+
+
+drift:
+  # Significance level for Kolmogorov–Smirnov (KS) drift tests
+  # Lower → less sensitive (fewer false alarms), Higher → more sensitive
+  p_value_threshold: 0.05
+
+
+feedback:
+  # Threshold for acceptable Mean Absolute Error (MAE)
+  # If model’s MAE exceeds this → flag retraining
+  mae_threshold: 0.2
+  
+  # Threshold for Expected Calibration Error (ECE)
+  # If model’s ECE exceeds this → advise recalibration
+  ece_threshold: 0.1
+  
+  # Whether to automatically include retraining suggestions
+  retrain_trigger: true
