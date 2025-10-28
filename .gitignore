@@ -44,7 +44,7 @@ results/
 
 # External repositories
 pytorch_mpiigaze_demo/
-
+./data/raw/ARGaze/sceans/
 # OS
 .DS_Store
 Thumbs.db
