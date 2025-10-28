@@ -61,12 +61,16 @@ def build_target(df: pd.DataFrame) -> np.ndarray:
     return np.clip(tgt, 0.0, 1.0)
 
 
-def extract_X(df: pd.DataFrame) -> np.ndarray:
-    # keep numeric features only; fill NA
-    fcols = [c for c in FEATS if c in df.columns]
-    X = df[fcols].apply(pd.to_numeric, errors="coerce").fillna(0.0).to_numpy(dtype=float)
-    # Replace NaNs from aoi_hit_rate if entirely missing
-    X[np.isnan(X)] = 0.0
+def extract_X_with_cols(df: pd.DataFrame, cols: list[str]) -> np.ndarray:
+    """Extract features in a fixed column order, filling missing with zeros."""
+    parts = []
+    for c in cols:
+        if c in df.columns:
+            col = pd.to_numeric(df[c], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        else:
+            col = np.zeros(len(df), dtype=float)
+        parts.append(col)
+    X = np.stack(parts, axis=1) if parts else np.zeros((len(df), 0), dtype=float)
     return X
 
 
@@ -85,8 +89,10 @@ def train_and_predict(
 ) -> Tuple[pd.DataFrame, float]:
     # Targets
     y_ref = build_target(ref_df)
-    X_ref = extract_X(ref_df)
-    X_cur = extract_X(cur_df)
+    # Align feature columns across ref and current using FEATS order
+    feature_cols = [c for c in FEATS if (c in ref_df.columns) or (c in cur_df.columns)]
+    X_ref = extract_X_with_cols(ref_df, feature_cols)
+    X_cur = extract_X_with_cols(cur_df, feature_cols)
 
     # Basic scaler: z-score using ref statistics
     mean_ref = X_ref.mean(axis=0)

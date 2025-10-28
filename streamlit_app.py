@@ -66,36 +66,76 @@ def get_frame():
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img = Image.fromarray(frame)
     else:
-        img = Image.open(PLACEHOLDER_IMAGE)
+        try:
+            if PLACEHOLDER_IMAGE.exists():
+                img = Image.open(PLACEHOLDER_IMAGE)
+            else:
+                # Fallback simple placeholder if image is missing
+                img = Image.fromarray(np.ones((360, 640, 3), dtype=np.uint8) * 220)
+        except Exception:
+            img = Image.fromarray(np.ones((360, 640, 3), dtype=np.uint8) * 220)
     return img
 
-# --------------------------------
-# Initialize Conformal Model and Buffers
-# --------------------------------
-conf_reg = ConformalRegressor(alpha=alpha)
-# Use available processed data to calibrate if present; fallback to dummy
-calib_paths = [
-    BASE_DIR / "data/processed/current_with_pred.parquet",
-    BASE_DIR / "data/processed/ref.parquet",
-    BASE_DIR / "src/evaluation_agent/data/processed/ref.parquet",
-]
-calibrated = False
-for p in calib_paths:
-    try:
-        if p.exists():
-            df = pd.read_parquet(p)
-            if {"ema_engagement", "y_pred"}.issubset(df.columns):
-                conf_reg.fit_calibration(df["ema_engagement"], df["y_pred"])
-                calibrated = True
-                break
-    except Exception:
-        pass
-if not calibrated:
-    conf_reg.fit_calibration(np.random.rand(200), np.random.rand(200))
+"""
+Session state initialization to persist model and buffers across reruns
+"""
+# Persist conformal regressor across reruns
+if "conf_reg" not in st.session_state:
+    st.session_state["conf_reg"] = ConformalRegressor(alpha=alpha)
+    st.session_state["conf_alpha"] = alpha
 
-y_pred_buffer = deque(maxlen=window_size)
-y_lower_buffer = deque(maxlen=window_size)
-y_upper_buffer = deque(maxlen=window_size)
+# Update alpha if changed
+if st.session_state.get("conf_alpha") != alpha:
+    st.session_state["conf_alpha"] = alpha
+    st.session_state["conf_reg"].alpha = alpha
+
+# Calibrate once (or re-use if previously calibrated)
+if not getattr(st.session_state["conf_reg"], "calibrated", False):
+    calib_paths = [
+        BASE_DIR / "data/processed/current_with_pred.parquet",
+        BASE_DIR / "data/processed/ref.parquet",
+        BASE_DIR / "src/evaluation_agent/data/processed/ref.parquet",
+    ]
+    calibrated = False
+    for p in calib_paths:
+        try:
+            if p.exists():
+                df = pd.read_parquet(p)
+                if {"ema_engagement", "y_pred"}.issubset(df.columns):
+                    st.session_state["conf_reg"].fit_calibration(df["ema_engagement"], df["y_pred"])
+                    calibrated = True
+                    break
+        except Exception:
+            pass
+    if not calibrated:
+        st.session_state["conf_reg"].fit_calibration(np.random.rand(200), np.random.rand(200))
+
+# Persist rolling buffers across reruns and handle window size changes
+def _ensure_buffers(maxlen: int):
+    if "buffer_maxlen" not in st.session_state:
+        st.session_state["buffer_maxlen"] = maxlen
+    if (
+        "y_pred_buffer" not in st.session_state
+        or "y_lower_buffer" not in st.session_state
+        or "y_upper_buffer" not in st.session_state
+    ):
+        st.session_state["y_pred_buffer"] = deque(maxlen=maxlen)
+        st.session_state["y_lower_buffer"] = deque(maxlen=maxlen)
+        st.session_state["y_upper_buffer"] = deque(maxlen=maxlen)
+        st.session_state["buffer_maxlen"] = maxlen
+    elif st.session_state["buffer_maxlen"] != maxlen:
+        # Resize while keeping recent history
+        def _resize(dq: deque, new_maxlen: int) -> deque:
+            tmp = list(dq)[-new_maxlen:]
+            ndq = deque(maxlen=new_maxlen)
+            ndq.extend(tmp)
+            return ndq
+        st.session_state["y_pred_buffer"] = _resize(st.session_state["y_pred_buffer"], maxlen)
+        st.session_state["y_lower_buffer"] = _resize(st.session_state["y_lower_buffer"], maxlen)
+        st.session_state["y_upper_buffer"] = _resize(st.session_state["y_upper_buffer"], maxlen)
+        st.session_state["buffer_maxlen"] = maxlen
+
+_ensure_buffers(window_size)
 
 # --------------------------------
 # Tabs Layout
@@ -124,18 +164,18 @@ while True:
 
             # Simulate a new engagement prediction
             engagement_pred = np.random.uniform(0.4, 0.9)
-            q = conf_reg.get_quantile()
+            q = st.session_state["conf_reg"].get_quantile()
             y_lower, y_upper = engagement_pred - q, engagement_pred + q
 
-            y_pred_buffer.append(engagement_pred)
-            y_lower_buffer.append(max(0, y_lower))
-            y_upper_buffer.append(min(1, y_upper))
+            st.session_state["y_pred_buffer"].append(engagement_pred)
+            st.session_state["y_lower_buffer"].append(max(0, y_lower))
+            st.session_state["y_upper_buffer"].append(min(1, y_upper))
 
             # Plot
             fig, ax = plt.subplots()
-            x = np.arange(len(y_pred_buffer))
-            ax.plot(x, list(y_pred_buffer), color="royalblue", label="Predicted Engagement")
-            ax.fill_between(x, list(y_lower_buffer), list(y_upper_buffer),
+            x = np.arange(len(st.session_state["y_pred_buffer"]))
+            ax.plot(x, list(st.session_state["y_pred_buffer"]), color="royalblue", label="Predicted Engagement")
+            ax.fill_between(x, list(st.session_state["y_lower_buffer"]), list(st.session_state["y_upper_buffer"]),
                             color="lightblue", alpha=0.4, label="CP Interval")
             ax.set_ylim(0, 1)
             ax.set_xlabel("Time Steps")

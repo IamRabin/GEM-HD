@@ -2,7 +2,7 @@
   "actions": [
     {
       "type": "retrain",
-      "reason": "MAE = 0.292 > threshold 0.2"
+      "reason": "MAE = 139.717 > threshold 0.2"
     },
     {
       "type": "recalibrate",
