@@ -24,6 +24,7 @@ refresh_interval = st.sidebar.slider("Refresh interval (sec)", 2, 15, 5)
 alpha = st.sidebar.slider("Conformal α (uncertainty level)", 0.01, 0.3, 0.1)
 window_size = st.sidebar.slider("Rolling window size", 20, 100, 50)
 use_live_preds = st.sidebar.checkbox("Use live predictions (from data/processed)", value=True)
+pause_refresh_for_game = st.sidebar.checkbox("Pause auto-refresh during Mini Game", value=True)
 st.sidebar.markdown("⏱ Auto-refresh enabled — watching `results/` folder")
 
 # --------------------------------
@@ -100,6 +101,20 @@ def read_last_n_predictions(n: int):
         return {"y_pred": y_pred, "y_std": y_std}
     except Exception:
         return None
+
+def _file_info(path: Path):
+    try:
+        if path.exists():
+            mtime = path.stat().st_mtime
+            try:
+                df = pd.read_parquet(path)
+                n = len(df)
+            except Exception:
+                n = None
+            return {"exists": True, "rows": n, "mtime": mtime}
+    except Exception:
+        pass
+    return {"exists": False, "rows": None, "mtime": None}
 
 def load_results():
     metrics = safe_load_json(METRICS_FILE)
@@ -208,8 +223,8 @@ _ensure_buffers(window_size)
 # --------------------------------
 # Tabs Layout
 # --------------------------------
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["🎥 Live Stream & CP Uncertainty", "📊 Drift Analysis", "💡 Feedback", "📜 Model Card"]
+game_tab, tab1, tab2, tab3, tab4 = st.tabs(
+    ["🎮 Mini Game", "🎥 Live Stream & CP Uncertainty", "📊 Drift Analysis", "💡 Feedback", "📜 Model Card"]
 )
 
 # --------------------------------
@@ -217,6 +232,279 @@ tab1, tab2, tab3, tab4 = st.tabs(
 # --------------------------------
 while True:
     metrics, drift, feedback = load_results()
+
+    # ---- Tab 0: Mini Game (Pinball-like) ----
+    with game_tab:
+        # Initialize state
+        if "game_rounds_target" not in st.session_state:
+            st.session_state["game_rounds_target"] = 5
+        if "game_rounds_played" not in st.session_state:
+            st.session_state["game_rounds_played"] = 0
+        if "game_auto_launch" not in st.session_state:
+            st.session_state["game_auto_launch"] = True
+        if "game_focus" not in st.session_state:
+            st.session_state["game_focus"] = False
+
+        st.subheader("🎮 Pinball Mini Game")
+
+        rounds_target = int(st.session_state["game_rounds_target"])  # for templating
+        round_display = int(st.session_state["game_rounds_played"]) + 1
+        auto_run = "true" if st.session_state["game_auto_launch"] else "false"
+
+        # Always keep two columns; right is camera or placeholder
+        col_game, col_cam = st.columns([2, 1])
+
+        with col_game:
+            st.components.v1.html(
+                f"""
+                <style>
+                    #pinball-container {{
+                        background: radial-gradient(circle at 50% 20%, #1f2937, #111827);
+                        border-radius: 12px;
+                        padding: 12px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+                    }}
+                    #hud, #bottom-controls {{
+                        color: #e5e7eb;
+                        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+                    }}
+                    #hud {{ display:flex; justify-content: space-between; align-items:center; margin-bottom: 8px; }}
+                    #bottom-controls {{ display:flex; gap: 12px; align-items: center; margin-top: 10px; flex-wrap: wrap; }}
+                    .control {{ background:#2563eb; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }}
+                    .control:active {{ transform: translateY(1px); }}
+                    #help {{ color: #9ca3af; font-size: 13px; margin-top: 4px; }}
+                    #power {{ height: 10px; background:#111827; border-radius:6px; overflow:hidden; border:1px solid #1f2937; }}
+                    #power > div {{ height:100%; width:0%; background:linear-gradient(90deg, #22c55e, #f59e0b, #ef4444); transition: width 0.05s; }}
+                </style>
+                <div id="pinball-container">
+                    <div id=\"hud\"><div>Score: <span id=\"score\">0</span></div><div>Round: <span id=\"round\">{round_display}</span> / {rounds_target}</div></div>
+                    <canvas id="board" width="480" height="720" tabindex="0"></canvas>
+                    <div id="help">Controls: Left/Right arrows for flippers · Space to launch (hold for power) · P pause · R reset.</div>
+                    <div id="bottom-controls">
+                        <div style=\"min-width:200px;\">
+                            <div style=\"color:#9ca3af; font-size:12px; margin-bottom:4px;\">Launch Power</div>
+                            <div id=\"power\"><div id=\"bar\"></div></div>
+                        </div>
+                        <button class=\"control\" onclick=\"launch()\">Space/Launch</button>
+                        <button class=\"control\" onclick=\"resetGame()\">R/Reset</button>
+                        <button class=\"control\" onclick=\"togglePause()\">P/Pause</button>
+                    </div>
+                </div>
+                <script>
+                (function() {{
+                    const autoRun = {auto_run};
+                    const canvas = document.getElementById('board');
+                    const ctx = canvas.getContext('2d');
+                    const W = canvas.width, H = canvas.height;
+                    let score = 0;
+                    let paused = false;
+                    let round = {round_display};
+                    const gravity = 0.25;
+                    const damping = 0.82;
+                    const ball = {{ x: W-40, y: H-40, vx: 0, vy: 0, r: 9, inPlay: false }};
+                    const keys = {{ left: false, right: false }};
+                    // Power charge
+                    let charging = false; let power = 0; const maxPower = 1.0; const bar = document.getElementById('bar');
+
+                    // Flippers
+                    const flipperWidth = 12, flipperLen = 70;
+                    const leftFlipper = {{
+                        px: 100, py: H - 120, angle: Math.PI * 0.22, rest: Math.PI * 0.22, active: Math.PI * -0.10, vel: 0
+                    }};
+                    const rightFlipper = {{
+                        px: W - 100, py: H - 120, angle: Math.PI * (1 - 0.22), rest: Math.PI * (1 - 0.22), active: Math.PI * (1 + 0.10), vel: 0
+                    }};
+
+                    // Bumpers
+                    const bumpers = [
+                        {{x: 120, y: 160, r: 16, s: 50}},
+                        {{x: 240, y: 120, r: 18, s: 75}},
+                        {{x: 360, y: 180, r: 14, s: 40}},
+                        {{x: 160, y: 260, r: 20, s: 60}},
+                        {{x: 300, y: 310, r: 16, s: 50}},
+                        {{x: 240, y: 420, r: 22, s: 90}}
+                    ];
+                    const leftWallX = 30, rightWallX = W - 30, laneX = W - 70;
+
+                    function launch() {{
+                        if (!ball.inPlay) {{
+                            const p = Math.min(1, Math.max(0.2, power || (autoRun ? 0.6 : 0.4)));
+                            const v = 8 + 10*p; // 8..18
+                            ball.x = W - 40; ball.y = H - 40; ball.vx = -3.2 - 2.0*p; ball.vy = -v; ball.inPlay = true; power = 0; bar.style.width = '0%';
+                        }}
+                    }}
+                    window.launch = launch;
+
+                    window.resetGame = function() {{
+                        score = 0; document.getElementById('score').textContent = score;
+                        round = 1; document.getElementById('round').textContent = round;
+                        ball.inPlay = false; ball.vx = ball.vy = 0; ball.x = W - 40; ball.y = H - 40;
+                    }}
+
+                    window.togglePause = function() {{ paused = !paused; }}
+
+                    function reflect(vx, vy, nx, ny) {{
+                        const dot = vx*nx + vy*ny;
+                        return [vx - 2*dot*nx, vy - 2*dot*ny];
+                    }}
+
+                    function segNearestPoint(px, py, qx, qy, x, y) {{
+                        const dx = qx - px, dy = qy - py;
+                        const t = Math.max(0, Math.min(1, ((x - px)*dx + (y - py)*dy) / ((dx*dx + dy*dy)||1)));
+                        return [px + t*dx, py + t*dy, t];
+                    }}
+
+                    function collideFlipper(flip, kickDir) {{
+                        const tx = flip.px + Math.cos(flip.angle) * flipperLen;
+                        const ty = flip.py + Math.sin(flip.angle) * flipperLen;
+                        const [nx, ny, t] = segNearestPoint(flip.px, flip.py, tx, ty, ball.x, ball.y);
+                        const dx = ball.x - nx, dy = ball.y - ny;
+                        const dist = Math.hypot(dx, dy);
+                        if (dist < ball.r + flipperWidth*0.5 && t > 0.05 && t < 0.95) {{
+                            const nux = dx / (dist||1), nuy = dy / (dist||1);
+                            [ball.vx, ball.vy] = reflect(ball.vx, ball.vy, nux, nuy);
+                            const kick = 4.5;
+                            ball.vx += kick * (-Math.sin(flip.angle)) * kickDir;
+                            ball.vy += kick * ( Math.cos(flip.angle)) * kickDir;
+                            ball.x = nx + (ball.r + flipperWidth*0.5 + 0.5) * nux;
+                            ball.y = ny + (ball.r + flipperWidth*0.5 + 0.5) * nuy;
+                            score += 5; document.getElementById('score').textContent = score;
+                        }}
+                    }}
+
+                    function drawFlipper(flip) {{
+                        const tx = flip.px + Math.cos(flip.angle) * flipperLen;
+                        const ty = flip.py + Math.sin(flip.angle) * flipperLen;
+                        ctx.strokeStyle = '#eab308';
+                        ctx.lineWidth = flipperWidth;
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(flip.px, flip.py);
+                        ctx.lineTo(tx, ty);
+                        ctx.stroke();
+                    }}
+
+                    function step() {{
+                        if (paused) {{ requestAnimationFrame(step); return; }}
+                        ctx.clearRect(0,0,W,H);
+                        ctx.fillStyle = '#0b1220'; ctx.fillRect(0,0,W,H);
+                        ctx.fillStyle = '#374151';
+                        ctx.fillRect(leftWallX-6, 0, 12, H);
+                        ctx.fillRect(rightWallX-6, 0, 12, H);
+                        ctx.fillStyle = '#4b5563'; ctx.fillRect(laneX-2, H-220, 4, 220);
+
+                        for (const b of bumpers) {{
+                            ctx.beginPath();
+                            const g = ctx.createRadialGradient(b.x, b.y, 2, b.x, b.y, b.r);
+                            g.addColorStop(0, '#1d4ed8'); g.addColorStop(1, '#1e3a8a');
+                            ctx.fillStyle = g; ctx.arc(b.x, b.y, b.r, 0, Math.PI*2); ctx.fill();
+                        }}
+
+                        const leftTarget = keys.left ? leftFlipper.active : leftFlipper.rest;
+                        const rightTarget = keys.right ? rightFlipper.active : rightFlipper.rest;
+                        leftFlipper.angle += (leftTarget - leftFlipper.angle) * 0.25;
+                        rightFlipper.angle += (rightTarget - rightFlipper.angle) * 0.25;
+
+                        if (ball.inPlay) {{
+                            ball.vy += gravity;
+                            ball.x += ball.vx; ball.y += ball.vy;
+                            if (ball.x - ball.r < leftWallX) {{ ball.x = leftWallX + ball.r; ball.vx = -ball.vx * damping; }}
+                            if (ball.x + ball.r > rightWallX) {{ ball.x = rightWallX - ball.r; ball.vx = -ball.vx * damping; }}
+                            if (ball.y - ball.r < 10) {{ ball.y = 10 + ball.r; ball.vy = -ball.vy * damping; }}
+
+                            for (const b of bumpers) {{
+                                const dx = ball.x - b.x, dy = ball.y - b.y; const dist = Math.hypot(dx, dy);
+                                if (dist < ball.r + b.r) {{
+                                    const nx = dx / (dist||1), ny = dy / (dist||1);
+                                    [ball.vx, ball.vy] = reflect(ball.vx, ball.vy, nx, ny);
+                                    ball.vx *= 0.98; ball.vy *= 0.98; score += b.s; document.getElementById('score').textContent = score;
+                                    ball.x = b.x + (ball.r + b.r + 0.5) * nx; ball.y = b.y + (ball.r + b.r + 0.5) * ny;
+                                }}
+                            }}
+
+                            collideFlipper(leftFlipper, +1);
+                            collideFlipper(rightFlipper, -1);
+
+                            if (ball.y - ball.r > H) {{
+                                ball.inPlay = false; ball.vx = ball.vy = 0; ball.x = W - 40; ball.y = H - 40;
+                                round += 1; document.getElementById('round').textContent = round;
+                                if (autoRun) {{ setTimeout(() => {{ power = 0.6; bar.style.width = '60%'; launch(); }}, 800); }}
+                            }}
+                        }}
+
+                        drawFlipper(leftFlipper); drawFlipper(rightFlipper);
+                        ctx.beginPath(); const gb = ctx.createRadialGradient(ball.x-3, ball.y-3, 2, ball.x, ball.y, ball.r);
+                        gb.addColorStop(0, '#f3f4f6'); gb.addColorStop(1, '#9ca3af'); ctx.fillStyle = gb; ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+
+                        requestAnimationFrame(step);
+                    }}
+
+                    function kd(e) {{
+                        if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+                        if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+                        if (e.code === 'Space') {{ if (!charging && !ball.inPlay) {{ charging = true; }} }}
+                        if (e.code === 'KeyP') paused = !paused;
+                        if (e.code === 'KeyR') window.resetGame();
+                    }}
+                    function ku(e) {{
+                        if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+                        if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+                        if (e.code === 'Space') {{ if (charging) {{ charging = false; launch(); }} }}
+                    }}
+                    window.addEventListener('keydown', kd);
+                    window.addEventListener('keyup', ku);
+                    canvas.addEventListener('click', () => canvas.focus());
+
+                    function powerLoop() {{
+                        if (charging) {{ power = Math.min(maxPower, power + 0.02); }} else {{ power = Math.max(0, power - 0.03); }}
+                        bar.style.width = Math.round(100*power) + '%';
+                        requestAnimationFrame(powerLoop);
+                    }}
+
+                    powerLoop();
+                    if (autoRun) {{ setTimeout(() => {{ power = 0.6; bar.style.width = '60%'; launch(); }}, 500); }}
+                    step();
+                }})();
+                </script>
+                """,
+                height=800,
+                scrolling=False,
+            )
+
+        with col_cam:
+            st.subheader("🎥 Live Camera During Game")
+            # Fixed layout: show camera or blank placeholder (no fade) to keep position
+            if st.session_state.get("game_focus", False):
+                st.image(np.zeros((360, 640, 3), dtype=np.uint8) + 16, caption="Live feed hidden", use_container_width=True)
+            else:
+                frame = get_frame()
+                st.image(frame, caption="Live gaze feed", use_container_width=True)
+            st.caption("Follow the ball with your eyes while the camera records as usual.")
+
+        # Bottom control bar (moved to end per spec)
+        st.markdown("---")
+        bcols = st.columns([2, 1, 1, 1, 2])
+        with bcols[0]:
+            st.session_state["game_rounds_target"] = st.number_input(
+                "Rounds to play", min_value=1, max_value=20, value=int(st.session_state["game_rounds_target"]), step=1
+            )
+        with bcols[1]:
+            if st.button("Next Round"):
+                st.session_state["game_rounds_played"] = min(
+                    st.session_state["game_rounds_played"] + 1,
+                    st.session_state["game_rounds_target"],
+                )
+        with bcols[2]:
+            if st.button("Reset Rounds"):
+                st.session_state["game_rounds_played"] = 0
+        with bcols[3]:
+            st.metric("Rounds", f"{st.session_state['game_rounds_played']} / {st.session_state['game_rounds_target']}")
+        with bcols[4]:
+            c1, c2 = st.columns(2)
+            with c1:
+                st.session_state["game_auto_launch"] = st.toggle("Auto-launch", value=st.session_state["game_auto_launch"], key="game_auto_launch_ctl")
+            with c2:
+                st.session_state["game_focus"] = st.toggle("Hide camera", value=st.session_state["game_focus"], key="game_focus_ctl")
 
     # ---- Tab 1: Webcam + Live Conformal Plot ----
     with tab1:
@@ -294,6 +582,34 @@ while True:
                 r = risk_label(last_pred, last_width)
                 cols[2].markdown(f"**Risk level:** `{r}`")
 
+            # Stream health diagnostics
+            st.markdown("---")
+            st.caption("Stream health (diagnostics)")
+            cur_path = BASE_DIR / "data/processed/current.parquet"
+            pred_path = find_current_with_pred() or (BASE_DIR / "data/processed/current_with_pred.parquet")
+            cur_info = _file_info(cur_path)
+            pred_info = _file_info(pred_path) if pred_path is not None else {"exists": False, "rows": None, "mtime": None}
+            frame_age = None
+            try:
+                if LIVE_FRAME_FILE.exists():
+                    frame_age = time.time() - LIVE_FRAME_FILE.stat().st_mtime
+            except Exception:
+                pass
+            c1, c2, c3 = st.columns(3)
+            c1.metric("current.parquet rows", cur_info["rows"] if cur_info["rows"] is not None else 0)
+            c2.metric("current_with_pred rows", pred_info["rows"] if pred_info["rows"] is not None else 0)
+            c3.metric("Live frame age (s)", f"{frame_age:.1f}" if frame_age is not None else "n/a")
+
+            if use_live_preds and (not pred_info["exists"] or (pred_info["rows"] is not None and pred_info["rows"] <= 0)):
+                st.warning("No live predictions detected. Start streaming: 1) webcam features, 2) streaming inference.")
+                st.code(
+                    """
+python -m src.webcam_stream_features --output data/processed/current.parquet
+python -m src.stream_infer --ref data/processed/ref.parquet --current data/processed/current.parquet --output data/processed/current_with_pred.parquet --interval 1.0
+""".strip(),
+                    language="bash",
+                )
+
     # ---- Tab 2: Drift ----
     with tab2:
         st.subheader("🧩 Feature Drift Monitoring")
@@ -335,5 +651,9 @@ while True:
     # Clarify what is being predicted
     st.caption("Predicted engagement is a normalized score in [0,1] estimating user engagement from gaze features. The shaded band shows an uncertainty interval (conformal half-width q or provided y_std).")
 
-    time.sleep(refresh_interval)
+    # Extend refresh interval while game is running, if requested
+    _effective_refresh = refresh_interval
+    if pause_refresh_for_game and st.session_state.get("game_running", False):
+        _effective_refresh = max(60, refresh_interval * 20)
+    time.sleep(_effective_refresh)
     st.rerun()
